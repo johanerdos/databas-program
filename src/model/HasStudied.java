@@ -1,10 +1,22 @@
 package model;
 
+import java.util.ArrayList;
+
 public class HasStudied {
 	private String ssn;
 	private String courseID;
 	private String grade;
+	private ArrayList<HasStudied> showResult = new ArrayList<HasStudied>();
 	
+	
+	public ArrayList<HasStudied> getShowResult() {
+		return showResult;
+	}
+
+	public void setShowResult(ArrayList<HasStudied> showResult) {
+		this.showResult = showResult;
+	}
+
 	public HasStudied (String ssn, String courseID, String grade) {
 		this.ssn = ssn;
 		this.courseID = courseID;
@@ -33,5 +45,10 @@ public class HasStudied {
 
 	public void setGrade(String grade) {
 		this.grade = grade;
+	}
+	
+	@Override
+	public String toString() {
+		return ssn + ", " + courseID + ", " + grade;
 	}
 }

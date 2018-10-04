@@ -4,9 +4,15 @@ import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import controller.Controller;
+
 import model.Course;
+import model.HasStudied;
 import model.Student;
 
 import javax.swing.JFrame;
@@ -14,6 +20,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.JTextArea;
 import javax.swing.JLabel;
 
@@ -32,6 +39,9 @@ public class Interface {
 	private JTextField textField_9;
 	private JTextField textField_10;
 	private JTextField textField_11;
+	private DefaultTableModel dataModelCourse;
+	private DefaultTableModel dataModelInfo;
+	private DefaultTableModel dataModelGrade;
 
 	/**
 	 * Launch the application.
@@ -60,7 +70,7 @@ public class Interface {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
+		frame = new JFrame("JALD");
 		frame.setBounds(100, 100, 1118, 735);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -151,6 +161,9 @@ public class Interface {
 					messageBoard.setText("Error");
 				}
 			 }
+			textField.setText(" ");
+			textField_1.setText(" ");
+			textField_2.setText(" ");
 		  }		
 		});
 		panel.add(btnAddStudent);
@@ -167,23 +180,29 @@ public class Interface {
 				if(courseID.isEmpty() || courseName.isEmpty() || textField_5.getText().isEmpty()) {
 					messageBoard.setText("Please type in all fields");
 				}else {
+					
 					try {
-						
+						try {
 							
-						Integer cred = Integer.parseInt(credits);
-						Controller.addCourse(courseID, courseName, cred);
-						messageBoard.setText("Course added");
+							Integer cred = Integer.parseInt(credits);
+							Controller.addCourse(courseID, courseName, cred);
+							messageBoard.setText("Course added");
+							
+							
+						}catch (SQLException sql){
+							messageBoard.setText("ErrorMessage");
+						}	
 						
 						
-					}catch (SQLException sql){
-						messageBoard.setText("ErrorMessage");
 						
 					}catch (NumberFormatException ne) {
-						messageBoard.setText("Only numbers are acceptable");
+						messageBoard.setText("Only numbers is allowed");
 					}
 					
 				}
-				
+				textField_3.setText(" ");
+				textField_4.setText(" ");
+				textField_5.setText(" ");
 						
 			}
 		});
@@ -209,7 +228,8 @@ public class Interface {
 						Student st = Controller.findStudent(ssn);
 						
 						if (st == null) {
-							messageBoard.setText("Student does not exists");
+							String notFound = Controller.studentNotFound(ssn);
+							messageBoard.setText(notFound);
 						}else {
 							messageBoard.setText("Student with name: " + st.getName() + " " + "found");
 						}
@@ -222,6 +242,9 @@ public class Interface {
 			}else {
 				messageBoard.setText("Please type in all fields");
 			}
+		
+				
+			textField_6.setText(null);
 		
 			}
 			
@@ -252,7 +275,8 @@ public class Interface {
 						if(c != null) {
 							messageBoard.setText("Course with ID: " + " " + c.getCourseID() + " and Name: " + c.getCourseName() + " " + "found");
 						}else {
-							messageBoard.setText("Course not found!");
+							String notFound = Controller.cNotFound(courseID);
+							messageBoard.setText(notFound);
 						}
 						
 					}catch (SQLException sql) {
@@ -260,6 +284,7 @@ public class Interface {
 					}
 					
 				}
+				textField_7.setText(" ");
 			}
 		});
 		btnFindCourse.setBounds(329, 426, 146, 29);
@@ -285,23 +310,173 @@ public class Interface {
 		panel.add(textField_9);
 		textField_9.setColumns(10);
 		
-		JButton btnAddStudentTo = new JButton("Add Student To Course");
-		btnAddStudentTo.setBounds(617, 174, 234, 29);
-		panel.add(btnAddStudentTo);
+		JButton btnAddStudentToCourse = new JButton("Add Student To Course");
+		btnAddStudentToCourse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String ssn = textField_8.getText();
+				String courseID = textField_9.getText();
+				//borde inte credits finnas med i studies också??
+				
+				if(ssn.isEmpty() || courseID.isEmpty()) {
+					messageBoard.setText("Please type in all fields");
+				}else {
+					try {
+						Student st = Controller.findStudent(ssn);
+						Course c = Controller.findCourse(courseID);
+						
+						if(c == null) {
+							String notFound = Controller.cNotFound(courseID);
+							messageBoard.setText(notFound);
+							
+						}else if (st == null){
+							String notFound = Controller.studentNotFound(ssn);
+							messageBoard.setText(notFound);
+						}else {
+							
+							//Controller.addStudentToCourse(ssn, courseID);
+							messageBoard.setText("Student with ssn: " + st.getSsn() + " " + "has been added to course: " + c.getCourseID());
+						}
+					}catch (SQLException sql) {
+						messageBoard.setText("ErrorMessage");
+					}
+				}
+				textField_8.setText(" ");
+				textField_9.setText(" ");
+				
+			}
+		});
+		btnAddStudentToCourse.setBounds(617, 174, 234, 29);
+		panel.add(btnAddStudentToCourse);
 		
 		JButton btnShowResult = new JButton("Show Result");
+		btnShowResult.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				
+				String courseID = textField_7.getText();
+				
+				if(courseID.isEmpty()) {
+					messageBoard.setText("Please type in all fields");
+				}else {
+					try {
+						Course c = Controller.findCourse(courseID);
+						
+						if (c == null) {
+							String notFound = Controller.cNotFound(courseID);
+							messageBoard.setText(notFound);
+							 
+						}else {
+							ArrayList<HasStudied> studentResults = Controller.showAllStudentResult(courseID);
+							if(studentResults.isEmpty()) {
+								messageBoard.setText("No student has read the course");
+								
+									
+							}else {
+								
+								
+								
+								//messageBoard.setText(studentResults.toString());
+								
+							}
+						}
+
+					}catch (SQLException sql) {
+						messageBoard.setText("ErrorMessage");
+					}
+					
+					
+				}
+			textField_7.setText(" ");
+			}
+		});
 		btnShowResult.setBounds(329, 471, 146, 29);
 		panel.add(btnShowResult);
 		
-		JButton btnShowResultOn = new JButton("Show Result On Course");
-		btnShowResultOn.setBounds(617, 219, 234, 29);
-		panel.add(btnShowResultOn);
+		
+		 
+		
+		
+		JButton btnShowResultForStudent = new JButton("Show Result On Course");
+		btnShowResultForStudent.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				String ssn = textField_8.getText();
+				String courseID = textField_9.getText();
+				
+				
+				if(ssn.isEmpty() || courseID.isEmpty()) {
+					messageBoard.setText("Please type in all fields");
+				}else {
+					try {
+						Student st = Controller.findStudent(ssn);
+						Course c = Controller.findCourse(courseID);
+						
+						
+						if(st == null || c == null) {
+							messageBoard.setText("The student does not exist");
+						}else {
+							ArrayList<HasStudied> hs = Controller.showResult(ssn, courseID);
+							if (hs.isEmpty()) {
+								messageBoard.setText("The student with ssn: " + st.getSsn() + "has not examined from the course");
+							}else {
+								String str = "";
+								for (HasStudied x : hs) {
+									str = str + x.toString() + "\n";
+									
+								}
+								messageBoard.setText(str);
+								//messageBoard.setText(hs.toString());
+							}
+						}
+					}catch (SQLException sql) {
+						messageBoard.setText("ErrorMessage");
+					}
+				}
+				textField_8.setText(" ");
+				textField_9.setText(" ");
+			}
+		});
+		btnShowResultForStudent.setBounds(617, 219, 234, 29);
+		panel.add(btnShowResultForStudent);
 		
 		JButton btnFindIncompleteStudents = new JButton("Find Incomplete Students");
 		btnFindIncompleteStudents.setBounds(15, 471, 226, 29);
 		panel.add(btnFindIncompleteStudents);
 		
 		JButton btnShowAgradeStudents = new JButton("Show A-Grade Students");
+		btnShowAgradeStudents.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				//String ssn = textField_8.getText();
+				String courseID = textField_9.getText();
+				
+				if(courseID.isEmpty()) {
+					messageBoard.setText("Please type in all fields");
+				}else {
+					try {
+						//Student st = Controller.findStudent(ssn);
+						Course c = Controller.findCourse(courseID);
+						
+						if(c == null) {
+							messageBoard.setText("Either the student or the course does not exist");
+						}else {
+							HashMap<String, String> a_list = Controller.getGradePercentage(courseID);
+							if(a_list.isEmpty()) {
+								messageBoard.setText("No one has examined from the course");
+							}else {
+								for(Map.Entry<String, String> entry : a_list.entrySet()) {
+									String grade = entry.getKey();
+									String percent = entry.getValue() + "%";
+									messageBoard.setText(grade + percent);
+								}
+								
+							}
+						}
+					}catch (SQLException sql) {
+						messageBoard.setText("ErrorMessage");
+					}
+				}
+				textField_8.setText("");
+				textField_9.setText("");
+			}
+		});
 		btnShowAgradeStudents.setBounds(617, 274, 233, 29);
 		panel.add(btnShowAgradeStudents);
 		
@@ -324,16 +499,103 @@ public class Interface {
 		panel.add(lblCourseId_2);
 		
 		JButton btnRemoveStudent = new JButton("Remove Student");
+		btnRemoveStudent.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				String ssn = textField_10.getText();
+				
+				if(ssn.isEmpty()) {
+					messageBoard.setText("Please type in all fields");
+				}else {
+					
+					try {
+						Student st = Controller.findStudent(ssn);
+						if (st == null) {
+							String notFound = Controller.studentNotFound(ssn);
+							
+							messageBoard.setText(notFound);
+						}else {
+							Controller.removeStudent(ssn);
+							messageBoard.setText("Student with ssn: " + st.getSsn() + "is removed");
+						}
+					} catch (SQLException sql) {
+						messageBoard.setText("ErrorMessage");
+					}
+					
+					
+				}
+			
+				textField_10.setText(" ");
+				
+			}
+		});
 		btnRemoveStudent.setBounds(819, 366, 184, 29);
 		panel.add(btnRemoveStudent);
 		
 		JButton btnRemoveCourse = new JButton("Remove Course");
+		btnRemoveCourse.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				String courseID = textField_11.getText();
+				
+				if(courseID.isEmpty()) {
+					messageBoard.setText("Please type in all fields");
+				}else {
+					try {
+						Course c = Controller.findCourse(courseID);
+						
+						if(c == null) {
+							String notFound = Controller.cNotFound(courseID);
+							messageBoard.setText(notFound);
+							
+						}else {
+							Controller.removeCourse(courseID);
+							messageBoard.setText("Course with courseID: " + c.getCourseID() + " is deleted");
+						}
+					}catch (SQLException sql){
+						messageBoard.setText("ErrorMessage");
+					}
+				}
+				textField_11.setText(" ");
+			}
+		});
 		btnRemoveCourse.setBounds(819, 426, 184, 29);
 		panel.add(btnRemoveCourse);
 		
-		JButton btnRemoveStudentFrom = new JButton("Remove Student From Course");
-		btnRemoveStudentFrom.setBounds(562, 471, 256, 29);
-		panel.add(btnRemoveStudentFrom);
+		JButton btnRemoveStudentFromCourse = new JButton("Remove Student From Course");
+		btnRemoveStudentFromCourse.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent e) {
+				String ssn = textField_10.getText();
+				String courseID = textField_11.getText();
+				//String[] grade = {"A", "B", "C", "D", "E", "U"};
+				String grade = "C";
+				
+				if(ssn.isEmpty() || courseID.isEmpty()) {
+					messageBoard.setText("Please type in all fields");
+				}else {
+					try {
+						Student st = Controller.findStudent(ssn);
+						Course c = Controller.findCourse(courseID);
+						
+						if(st == null || c == null) {
+							messageBoard.setText("Either the student or the course does not exist");
+						}else {
+							Controller.removeStudentFromCourse(ssn, courseID);
+							messageBoard.setText("Student with ssn: " + st.getSsn() + " " + "has been removed from course: " + c.getCourseID());
+							
+							//String grade = Controller.generateGrade(ssn, courseID);
+							
+							Controller.addStudentToHasStudied(ssn, courseID, grade);
+						}
+					}catch (SQLException sql){
+						messageBoard.setText("ErrorMessage");
+					}
+				}
+				textField_10.setText(" ");
+				textField_11.setText(" ");
+				
+			}
+		});
+		btnRemoveStudentFromCourse.setBounds(562, 471, 256, 29);
+		panel.add(btnRemoveStudentFromCourse);
 		
 		JPanel panel_1 = new JPanel();
 		tabbedPane.addTab("Uppgift 2", null, panel_1, null);
