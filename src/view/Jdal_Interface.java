@@ -170,7 +170,7 @@ public class Jdal_Interface extends JFrame {
 		panel.add(lblMessageBoard);
 		
 		JLabel lblResults_2 = new JLabel("Results");
-		lblResults_2.setBounds(316, 11, 46, 14);
+		lblResults_2.setBounds(316, 10, 46, 14);
 		panel.add(lblResults_2);
 		
 		JPanel panel_2 = new JPanel();
@@ -181,7 +181,7 @@ public class Jdal_Interface extends JFrame {
 		table_2.setCellSelectionEnabled(true);
 		table_2.setColumnSelectionAllowed(true);
 		table_2.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table_2.setBounds(294, 198, 220, 167);
+		table_2.setBounds(350, 250, 220, 167);
 		panel_2.add(table_2);
 		
 		JTextArea messageBoardCourse = new JTextArea();
@@ -214,10 +214,10 @@ public class Jdal_Interface extends JFrame {
 						}else if (st != null) {
 							messageBoard.setText("Student already exists");
 						}else {
-							String time = Controller.responseTime();
 							
-							Controller.addStudent(ssn, name, email);
-							messageBoard.setText("Student added!" + "\n" + "Response time: " +time);
+							
+							
+							messageBoard.setText("Student added!");
 							
 						 }
 						
@@ -249,10 +249,9 @@ public class Jdal_Interface extends JFrame {
 							
 							messageBoard.setText(notFound);
 						}else {
-							Controller.removeStudent(ssn);
-							String time = Controller.responseTime();
 							
-							messageBoard.setText("Student with ssn: " + st.getSsn() + "is removed" + "\n" + "Response time: " + time);
+							
+							messageBoard.setText("Student with ssn: " + st.getSsn() + "is removed");
 						}
 					} catch (SQLException sql) {
 						messageBoard.setText(ErrorHandling.getMessageForErrorCode(sql.getErrorCode(), ""));
@@ -273,8 +272,7 @@ public class Jdal_Interface extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				dataModelStudent.setRowCount(0);
 				String ssn = ssnTextField.getText();
-				String[] studentHeader = {"SSN", "Name", "Address"};
-				dataModelStudent.setColumnIdentifiers(studentHeader);
+				
 				if (!ssn.isEmpty()) {
 					try {
 						Student st = Controller.findStudent(ssn);
@@ -300,8 +298,7 @@ public class Jdal_Interface extends JFrame {
 		
 				
 			ssnTextField.setText(null);
-			String time = Controller.responseTime();
-			messageBoard.setText("Response time: " + time);
+			
 			}
 		});
 		btnFindStudent.setBounds(20, 221, 274, 25);
@@ -328,10 +325,10 @@ public class Jdal_Interface extends JFrame {
 					try {
 						
 						Integer cred = Integer.parseInt(credits);
-						String time = Controller.responseTime();
+						
 						
 						Controller.addCourse(courseID, courseName, cred);
-						messageBoardCourse.setText("Course added" + "\n" + "Response time: " + time);
+						messageBoardCourse.setText("Course added!");
 						
 						
 					}catch (SQLException sql){
@@ -352,7 +349,7 @@ public class Jdal_Interface extends JFrame {
 			
 			}
 		});
-		btnAddCourse.setBounds(80, 27, 122, 23);
+		btnAddCourse.setBounds(80, 27, 200, 23);
 		panel_1.add(btnAddCourse);
 		
 		JButton btnRemoveCourse = new JButton("Remove Course");
@@ -372,21 +369,20 @@ public class Jdal_Interface extends JFrame {
 							messageBoardCourse.setText(notFound);
 							
 						}else {
-							String time = Controller.responseTime();
+							
 							
 							Controller.removeCourse(courseID);
-							messageBoardCourse.setText("Course with courseID: " + c.getCourseID() + " is deleted" + "\n" + "Response Time: " + time);
+							messageBoardCourse.setText("Course with courseID: " + c.getCourseID() + " is deleted");
 						}
 					}catch (SQLException sql){
 						messageBoardCourse.setText(ErrorHandling.getMessageForErrorCode(sql.getErrorCode(), ""));
 					}
 				}
-				String time = Controller.responseTime();
-				messageBoardCourse.setText("Response time: " + time);
+				
 				textFieldCourseID.setText(null);
 			}
 		});
-		btnRemoveCourse.setBounds(80, 61, 122, 23);
+		btnRemoveCourse.setBounds(80, 61, 200, 23);
 		panel_1.add(btnRemoveCourse);
 		
 		JButton btnFindCourse = new JButton("Find Course");
@@ -415,11 +411,11 @@ public class Jdal_Interface extends JFrame {
 				
 			}
 			textFieldCourseID.setText(null);
-			String time = Controller.responseTime();
-			messageBoardCourse.setText("Response time: " + time);
+			
+			
 			}
 		});
-		btnFindCourse.setBounds(80, 95, 122, 23);
+		btnFindCourse.setBounds(80, 95, 200, 23);
 		panel_1.add(btnFindCourse);
 		
 		textFieldCourseID = new JTextField();
@@ -466,13 +462,13 @@ public class Jdal_Interface extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 					String ssn = textFieldAdminSSN.getText();
 					String courseID = textFieldAdminCourseID.getText();
-					//String credits = textFieldAdminSSN.getText();
+					
 		
 					if(ssn.isEmpty() || courseID.isEmpty()) {
 						messageBoard.setText("Please type in all fields");
 					}else {
 						try {
-							//Integer cred = Integer.parseInt(credits);
+							
 							Student st = Controller.findStudent(ssn);
 							Course c = Controller.findCourse(courseID);
 				
@@ -490,14 +486,11 @@ public class Jdal_Interface extends JFrame {
 							}
 						}catch (SQLException sql) {
 							messageBoardAdmin.setText(ErrorHandling.getMessageForErrorCode(sql.getErrorCode(), ""));
-						}catch (NumberFormatException ne) {
-							messageBoardAdmin.setText("Only numbers in credits field is allowed");
 						}
 					}
 					textFieldAdminSSN.setText(null);
 					textFieldAdminCourseID.setText(null);
-					String time = Controller.responseTime();
-					messageBoardAdmin.setText("Response time: " + time);
+					
 		
 			}
 		});
@@ -548,8 +541,7 @@ public class Jdal_Interface extends JFrame {
 				
 				textFieldAdminSSN.setText(null);
 				textFieldAdminCourseID.setText(null);
-				String time = Controller.responseTime();
-				messageBoardAdmin.setText("Response time: " + time);
+				
 			}
 		});
 		btnRemoveStudentFrom.setBounds(40, 50, 180, 23);
@@ -573,7 +565,7 @@ public class Jdal_Interface extends JFrame {
 		lblCourseId_2.setBounds(10, 187, 60, 14);
 		panel_2.add(lblCourseId_2);
 		
-		JButton btnShowResultForCourse = new JButton("Show result for course");
+		JButton btnShowResultForCourse = new JButton("Show Result For Course");
 		btnShowResultForCourse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dataModelAdmin.setRowCount(0);
@@ -612,11 +604,10 @@ public class Jdal_Interface extends JFrame {
 					
 				}
 			textFieldAdminCID.setText(null);
-			String time = Controller.responseTime();
-			messageBoardAdmin.setText("Response time: " + time);
+			
 			}
 		});
-		btnShowResultForCourse.setBounds(354, 20, 160, 23);
+		btnShowResultForCourse.setBounds(354, 20, 200, 23);
 		panel_2.add(btnShowResultForCourse);
 		
 		JButton btnShowResultForStudent = new JButton("Show Result For Student");
@@ -653,8 +644,7 @@ public class Jdal_Interface extends JFrame {
 				}
 				textFieldAdminSSN.setText(null);
 				textFieldAdminCourseID.setText(null);
-				String time = Controller.responseTime();
-				messageBoardAdmin.setText("Response time: " + time);
+				
 			}
 		});
 		btnShowResultForStudent.setBounds(38, 118, 182, 23);
@@ -665,14 +655,13 @@ public class Jdal_Interface extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				dataModelAdmin.setRowCount(0);
 				String courseID = textFieldAdminCID.getText();
-				String[] header = {"Grade", "Percent"};
-				dataModelAdmin.setColumnIdentifiers(header);
+				
 				
 				if(courseID.isEmpty()) {
 					messageBoardAdmin.setText("Please type in all fields");
 				}else {
 					try {
-						//Student st = Controller.findStudent(ssn);
+						
 						Course c = Controller.findCourse(courseID);
 						
 						if(c == null) {
@@ -695,11 +684,10 @@ public class Jdal_Interface extends JFrame {
 					}
 				}
 				textFieldAdminCID.setText("");
-				String time = Controller.responseTime();
-				messageBoardAdmin.setText("Response time: " + time);
+				
 			}
 		});
-		btnShowGradePercentage.setBounds(354, 50, 160, 23);
+		btnShowGradePercentage.setBounds(354, 50, 200, 23);
 		panel_2.add(btnShowGradePercentage);
 		
 		JButton btnShowFailedStudents = new JButton("Show Failed Students");
@@ -731,8 +719,7 @@ public class Jdal_Interface extends JFrame {
 					
 				}
 				textFieldAdminCourseID.setText(null);
-				String time = Controller.responseTime();
-				messageBoardAdmin.setText("Response time: " + time);
+				
 				
 			}
 		});
@@ -754,11 +741,10 @@ public class Jdal_Interface extends JFrame {
 				}catch (SQLException sql) {
 					messageBoardAdmin.setText(ErrorHandling.getMessageForErrorCode(sql.getErrorCode(), ""));
 				}
-				String time = Controller.responseTime();
-				messageBoardAdmin.setText(time);
+				
 			}
 		});
-		btnShowTroughput.setBounds(354, 84, 160, 23);
+		btnShowTroughput.setBounds(354, 84, 200, 23);
 		panel_2.add(btnShowTroughput);
 		
 		JTabbedPane tabbedPane_3 = new JTabbedPane(JTabbedPane.TOP);
@@ -793,7 +779,7 @@ public class Jdal_Interface extends JFrame {
 		panel_2.add(lblCourseId_3);
 		
 		JLabel lblResults = new JLabel("Results");
-		lblResults.setBounds(294, 173, 46, 14);
+		lblResults.setBounds(294, 225, 46, 14);
 		panel_2.add(lblResults);
 		
 		JTextArea messageBoard_2 = new JTextArea();
@@ -837,8 +823,7 @@ public class Jdal_Interface extends JFrame {
 						messageBoard_2.setText(ErrorHandling.getMessageForErrorCode(sql.getErrorCode(), ""));
 					}
 				}
-				String time = Controller.responseTime();
-				messageBoard_2.setText(time);
+				
 			}
 		});
 		btnShowInformation.setBounds(124, 41, 146, 33);
@@ -887,8 +872,7 @@ public class Jdal_Interface extends JFrame {
 						messageBoard_2.setText(ErrorHandling.getMessageForErrorCode(sql.getErrorCode(), ""));
 					}
 				}
-				String time = Controller.responseTime();
-				messageBoard_2.setText(time);
+				
 			}
 		});
 		btnShowMetadata.setBounds(450, 41, 130, 33);
@@ -922,7 +906,7 @@ public class Jdal_Interface extends JFrame {
 		messageBoard_3.setBounds(54, 445, 503, 60);
 		panel_4.add(messageBoard_3);
 		
-		ImageIcon excelImg = new ImageIcon("C:\\Users\\Administrator\\eclipse-workspace\\database-programming\\src\\icon\\excel2.jpg");
+		ImageIcon excelImg = new ImageIcon("C:\\Users\\Administrator\\eclipse-workspace\\database-programming\\src\\icon\\excel.png");
 		ImageIcon accessImg = new ImageIcon("C:\\Users\\Administrator\\eclipse-workspace\\database-programming\\src\\icon\\access.png");
 		
 		JComboBox comboBox = new JComboBox();
@@ -943,14 +927,13 @@ public class Jdal_Interface extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				int index = comboBox.getSelectedIndex();
 				String name ="Book" + (index) + ".xlsx";
-				
+				messageBoard_3.setText("");
 				try {
 					Controller_3.openFile(name);
 				}catch (Exception e) {
 					messageBoard_3.setText("File does not exist");
 				}
-				String time = Controller.responseTime();
-				messageBoard_3.setText(time);
+				
 			}
 		});
 		btnExcel.setIcon(excelImg);
@@ -962,6 +945,7 @@ public class Jdal_Interface extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				int index = comboBox.getSelectedIndex();
 				String name = "Access" + (index) + ".accdb";
+				messageBoard_3.setText("");
 				
 				try {
 					Controller_3.openFile(name);
@@ -970,8 +954,7 @@ public class Jdal_Interface extends JFrame {
 					messageBoard_3.setText("File does not exist");
 					
 				}
-				String time = Controller.responseTime();
-				messageBoard_3.setText(time);
+				
 			}
 		});
 		btnAccess.setIcon(accessImg);

@@ -19,27 +19,31 @@ public class StudentDal {
 	CourseDal c = new CourseDal();
 	
 	
-	// startar connection, kör preparedStatement sedan hämtar resultSet
+	
+	//Start connection, run ps and get resultset
 	private ResultSet runExecuteQuery(String sqlString) throws SQLException {
 		conn = DBConnection.getConnection();
 		ps = conn.prepareStatement(sqlString);
 		ResultSet rs = ps.executeQuery();
 		return rs;
 	}
-	// startar connection, kör preparedStatement sedan uppdaterar databasen
+	
+	//Start connection, run ps and update db
 	private void runExecuteUpdate (String sqlString) throws SQLException {
 		conn = DBConnection.getConnection();
 		ps = conn.prepareStatement(sqlString);
 		ps.executeUpdate();
 	}
-	// lägger till student
+	
+	//Add student
 	public void addStudent(String ssn, String name, String email) throws SQLException {
 		
 		String sqlString = "INSERT INTO Student VALUES( '" + ssn + "', '" + name + "', '" + email + "');";
 		runExecuteUpdate(sqlString);
 		conn.close();
 	}
-	// hittar student och dess info
+	
+	//Find student
 	public Student findStudent(String ssn) throws SQLException {
 		Student st;
 		String sqlString = "SELECT * FROM Student WHERE ssn = '" + ssn + "'";
@@ -56,7 +60,8 @@ public class StudentDal {
 		
 		
 	}
-//hämtar en student och dess resultat från en kurs
+
+	//Find a student and its result 
 	public HasStudied showResultForStudent(String ssn, String courseID, String grade) throws SQLException {
 		HasStudied s = null;
 		String sqlString = "SELECT * FROM HasStudied WHERE courseID = ' " + courseID + "' AND ssn = '" + ssn + "';";
@@ -87,7 +92,8 @@ public class StudentDal {
 		conn.close();
 		return showResultList;
 	}
-	//bortagning av student
+	
+	//Remove a student
 	public void removeStudent(String ssn) throws SQLException {
 		
 		String sqlString = "DELETE FROM Student WHERE ssn = '" + ssn + "';";
@@ -95,14 +101,15 @@ public class StudentDal {
 		conn.close();
 	
 	}
-	//bortagning av student från en kurs (studies)
+	
+	//Remove student from a course
 	public void removeStudentFromCourse (String ssn, String courseID) throws SQLException {
 		String sqlString = "DELETE FROM Studies WHERE ssn = '" + ssn + "' AND courseID = '" + courseID + "';";
 		runExecuteUpdate(sqlString);
 		conn.close();
 	}
 	
-	//Hämtar alla credits hos en viss student
+	//Get all credits from student
 	
 	public int getAllCredits (String ssn) throws SQLException {
 		String sqlString = "SELECT credits FROM Studies WHERE ssn = '" + ssn + "';";
@@ -113,7 +120,7 @@ public class StudentDal {
 	}
 	
 	
-	//Måste fixa det med att man bara kan läsa max 45 credits/termin.
+	
 	public void addStudentToCourse(String ssn, String courseID) throws SQLException {
 		//int cred = getAllCredits(ssn);
 		int cred = 15;

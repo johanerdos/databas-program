@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 public class ErrorHandling {
 	public static String getMessageForErrorCode(int errorCode, String prefix) {
-		String code = "An error has occurred";
+		String code = "The object is bound in either the class HasStudied or Studies";
 		//duplicated primary key
 		if(errorCode == 2627) {
 			code = prefix + " already registred";

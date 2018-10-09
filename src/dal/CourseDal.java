@@ -14,21 +14,24 @@ public class CourseDal {
 	public CourseDal() {     
 	
 	}
-	// Startar connection, kör preparedStatement sedan hämtar Resultset//
+	
+	//Start connection
 	private ResultSet runExecuteQuery(String sqlString) throws SQLException {
 		conn = DBConnection.getConnection();
 		ps = conn.prepareStatement(sqlString);
 		ResultSet rs = ps.executeQuery();
 		return rs;
 	}
-//Startar connection, kör preparedStatement sedan executeUpdate//
+
+	//Start connection, run ps and executeUpdate
 	public void runExecuteUpdate(String sqlString) throws SQLException {
 		conn = DBConnection.getConnection();
 		ps = conn.prepareStatement(sqlString);
 		ps.executeUpdate();
 	}
 
-// Hitta en kurs och dess information
+
+	//Find a course
 	public Course findCourse(String courseID) throws SQLException {
 		String sqlString = "SELECT * FROM Course WHERE courseID = '" + courseID + "';";
 		ResultSet rs = runExecuteQuery(sqlString);
@@ -45,20 +48,23 @@ public class CourseDal {
 		return null;
 	}
 
-//lägg till ny kurs
+
+	//Add new course
 	public void addCourse(String courseID, String courseName, int credits) throws SQLException{
 		String sqlString = "INSERT INTO Course VALUES ( '" + courseID + "', '" + courseName + "', " + credits + ");";
 		runExecuteUpdate(sqlString);
 		conn.close();
 	}
-// Ta bort kurs
+
+	//Remove course
 	public void removeCourse(String courseID) throws SQLException {
 		String sqlString = "DELETE FROM Course WHERE courseID ='" + courseID + "';";
 		runExecuteUpdate(sqlString);
 		ps.close();
 		conn.close();
 	}
-//Hämtar alla kurser
+
+	//retrieve all courses
 	public ArrayList<Course> getAllCourses() throws SQLException {
 		ArrayList<Course> allCourses = new ArrayList<Course>();
 		String sqlString = "SELECT * FROM Course";
@@ -75,7 +81,8 @@ public class CourseDal {
 		conn.close();
 		return allCourses;
 	}
-//Hämtar betygsfördelningen på en viss urs
+
+	//retrieve grades for a certain course
 	public HashMap<String, String> getGradePercentage(String courseID) throws SQLException {
 		HashMap<String, String> map = new HashMap<String, String>();
 	
@@ -92,8 +99,9 @@ public class CourseDal {
 			conn.close();
 			return map;
 		}
-//Hämtar top 10 högsta genomströmning
 
+
+	//retrieve top 10 throughput
 	public HashMap<String, String> getThroughput() throws SQLException {
 		HashMap<String, String> map = new HashMap<String, String>();
 	
